@@ -1,0 +1,23 @@
+# requirements.txt
+
+# Core Django Framework
+django
+
+# For background tasks (Anomaly Detection)
+celery
+redis
+
+# For reliably getting the user's IP address
+django-ipware
+
+# For rate limiting views
+django-ratelimit
+
+# For making HTTP requests (used for Geolocation API)
+requests
+
+# Production WSGI server (good practice to include)
+gunicorn
+
+# Mentioned for advanced anomaly detection
+scikit-learn
