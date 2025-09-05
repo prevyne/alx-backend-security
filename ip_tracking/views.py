@@ -1,5 +1,5 @@
 from django.http import HttpResponse
-from ratelimit.decorators import ratelimit
+from django_ratelimit.decorators import ratelimit
 
 def get_rate_limit(group, request):
     """

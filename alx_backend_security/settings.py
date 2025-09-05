@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     
     #3rd Party apps
-    'ratelimit',
+    'django_ratelimit',
     
     #Local apps
     'ip_tracking',
@@ -55,7 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ip_tracking.middleware.IPLoggingMiddleware',
-    'ratelimit.middleware.RateLimitMiddleware',
+    'django_ratelimit.middleware.RatelimitMiddleware',
 ]
 
 ROOT_URLCONF = 'alx_backend_security.urls'
@@ -138,4 +138,12 @@ CELERY_BEAT_SCHEDULE = {
         'task': 'ip_tracking.tasks.detect_suspicious_ips',
         'schedule': crontab(minute='0', hour='*'),  # Run at the start of every hour
     },
+}
+
+#cache backend
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+    }
 }
