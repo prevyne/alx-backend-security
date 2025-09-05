@@ -1,5 +1,3 @@
-# ip_tracking/middleware.py
-import requests
 from django.core.cache import cache
 from django.http import HttpResponseForbidden
 from .models import RequestLog, BlockedIP
@@ -11,6 +9,7 @@ class IPLoggingMiddleware:
     """
     def __init__(self, get_response):
         self.get_response = get_response
+        # It's better to fetch this from the DB or a cache that can be updated
         self.blocked_ips = set(BlockedIP.objects.values_list('ip_address', flat=True))
 
     def __call__(self, request):
@@ -20,30 +19,20 @@ class IPLoggingMiddleware:
             return HttpResponseForbidden("Your IP address has been blocked.")
 
         if ip:
-            # Geolocation lookup with caching
-            cache_key = f"geolocation_{ip}"
-            geo_data = cache.get(cache_key)
+            country = None
+            city = None
 
-            if not geo_data:
-                try:
-                    # Using a free geolocation API
-                    response = requests.get(f"http://ip-api.com/json/{ip}", timeout=2)
-                    response.raise_for_status()
-                    data = response.json()
-                    geo_data = {
-                        'country': data.get('country'),
-                        'city': data.get('city'),
-                    }
-                    # Cache for 24 hours
-                    cache.set(cache_key, geo_data, 60 * 60 * 24) 
-                except requests.RequestException:
-                    geo_data = {'country': None, 'city': None}
+            # Check if geolocation data is available from the ip_geolocation middleware
+            if hasattr(request, 'ip_geolocation_info'):
+                geo_info = request.ip_geolocation_info
+                country = geo_info.get('country')
+                city = geo_info.get('city')
 
             RequestLog.objects.create(
                 ip_address=ip,
                 path=request.path,
-                country=geo_data.get('country'),
-                city=geo_data.get('city')
+                country=country,
+                city=city
             )
 
         response = self.get_response(request)

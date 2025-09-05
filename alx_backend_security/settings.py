@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     
     #3rd Party apps
     'django_ratelimit',
+    'django_ip_geolocation',
     
     #Local apps
     'ip_tracking',
@@ -56,6 +57,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'ip_tracking.middleware.IPLoggingMiddleware',
     'django_ratelimit.middleware.RatelimitMiddleware',
+    'django_ip_geolocation.middleware.IpGeolocationMiddleware',
+    'ip_tracking.middleware.IPLoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'alx_backend_security.urls'

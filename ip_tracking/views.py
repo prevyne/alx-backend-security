@@ -15,3 +15,7 @@ def sensitive_view(request):
     A view protected by dynamic rate limiting.
     """
     return HttpResponse("This is a rate-limited view. You can access it.")
+
+def test_api_view(request):
+    # This view will trigger the IP tracking middleware
+    return HttpResponse("API test page is working. Your visit has been logged.")
